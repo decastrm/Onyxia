@@ -1,0 +1,68 @@
+#!/bin/bash
+
+DOMAIN=${1}
+
+sudo apt update && sudo apt install -y ssh vim git curl nmap netcat dnsutils ansible python3-pip virtualenv
+ 
+cat << EOF > ~/.vimrc
+silent! source $VIMRUNTIME/defaults.vim
+set mouse-=a
+set cursorline
+set cursorcolumn
+set expandtab
+set history=100
+set tabstop=4
+syntax on
+EOF
+
+cat << EOF > $HOME/.bash_aliases
+alias ll='ls -lrta'
+alias la='ls -A'
+alias l='ls -la'
+alias gs='git status'
+alias venv="source $HOME/venv/bin/activate"
+alias wk='/usr/bin/watch -n10 kubectl'
+alias k=kubectl
+complete -o default -F __start_kubectl k
+source <(kubectl completion bash)
+alias ns='~/.kube/namespace.sh'
+EOF
+
+virtualenv -p python3 $HOME/venv
+source $HOME/venv/bin/activate
+
+
+cat << EOF > /tmp/requirements.txt
+ansible==7.0.0
+coloredlogs==15.0.1
+docker==6.0.1
+flake8==6.0.0
+gitpython==3.1.29
+Jinja2==3.1.2
+keystoneauth1==5.1.0
+mock==4.0.3
+munch==2.5.0
+pathlib2==2.3.7.post1
+pytest==7.2.0
+python-cinderclient==7.4.1
+python-glanceclient==4.2.0
+python-heatclient==3.1.0
+python-keystoneclient==5.0.1
+python-neutronclient==8.2.0
+python-novaclient==18.2.0
+python-octaviaclient==3.2.0
+python-openstackclient==6.0.0
+python-swiftclient==4.1.0
+PyYAML==6.0
+setuptools==65.6.3
+EOF
+
+mkdir -p $HOME/.config/pip
+
+cat <<EOF > $HOME/.config/pip/pip.conf
+[global]
+index-url = https://nexus.${DOMAIN}/repository/pypi-proxy/simple
+cert = /usr/local/share/ca-certificates/minint/cert.2.crt
+EOF
+
+pip install -r /tmp/requirements.txt

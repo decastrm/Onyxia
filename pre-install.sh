@@ -7,7 +7,7 @@ SOPS_VERSION=v3.9.0
 TF_VERSION=1.9.5
 
 export DEBIAN_FRONTEND=noninteractive
-sudo apt update && sudo apt install -y ssh vim git curl nmap netcat dnsutils ansible python3-pip virtualenv s3cmd yq unzip
+sudo apt update && sudo apt install -y ssh vim git curl nmap netcat dnsutils ansible python3-pip virtualenv s3cmd yq unzip bash-completion
 
 cat << EOF > ~/.vimrc
 silent! source $VIMRUNTIME/defaults.vim
